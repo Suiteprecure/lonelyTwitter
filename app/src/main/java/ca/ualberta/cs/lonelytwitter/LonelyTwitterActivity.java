@@ -67,7 +67,7 @@ public class LonelyTwitterActivity extends Activity {
 				setResult(RESULT_OK);
 				//tweetList.clear();
 				//deleteFile(FILENAME);  // TODO deprecate this button
-				searchMessage = bodyText.getText().toString();
+				searchMessage = bodyText.getText().toString().trim();
 				ElasticsearchTweetController.GetTweetsTask searchTweet= new ElasticsearchTweetController.GetTweetsTask();
 
 				String queryA = "{\n" +
@@ -79,7 +79,7 @@ public class LonelyTwitterActivity extends Activity {
 				searchTweet.execute(queryA);
 
 				try{
-					tweetList = searchTweet.get();
+					tweetList.addAll(searchTweet.get());
 				}
 				catch(Exception e){
 					Log.i("Error","Failed to search");
