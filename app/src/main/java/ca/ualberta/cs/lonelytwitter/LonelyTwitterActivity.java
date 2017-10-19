@@ -13,8 +13,10 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,12 +26,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class LonelyTwitterActivity extends Activity {
+	private LonelyTwitterActivity activity = this;
 
-	private static final String FILENAME = "file.sav";
+	public static final String FILENAME = "file.sav";
 	private EditText bodyText;
 	private ListView oldTweetsList;
-	private ArrayList<Tweet> tweetList = new ArrayList<Tweet>();
-	private ArrayAdapter<Tweet> adapter;
+	public ArrayList<Tweet> tweetList = new ArrayList<Tweet>();
+	public ArrayAdapter<Tweet> adapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,10 @@ public class LonelyTwitterActivity extends Activity {
 		setContentView(R.layout.main);
 
 		bodyText = (EditText) findViewById(R.id.body);
+
+		Button clearButton = (Button) findViewById(R.id.clear);
 		Button saveButton = (Button) findViewById(R.id.save);
+
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +55,24 @@ public class LonelyTwitterActivity extends Activity {
 				tweetList.add(newTweet);
 				adapter.notifyDataSetChanged();
 				saveInFile();
+			}
+		});
+
+		clearButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick (View v){
+				setResult(RESULT_OK);
+				tweetList.clear();
+				deleteFile(FILENAME);
+				adapter.notifyDataSetChanged();
+			}
+		});
+
+		oldTweetsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Intent intent = new Intent(activity, EditTweetActivity.class);
+				intent.putExtra("position", position);
+				startActivity(intent);
+
 			}
 		});
 	}
@@ -64,7 +88,7 @@ public class LonelyTwitterActivity extends Activity {
 	}
 
 
-	private void loadFromFile() {
+	public void loadFromFile() {
 		try {
 			FileInputStream fis = openFileInput(FILENAME);
 			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
@@ -82,7 +106,7 @@ public class LonelyTwitterActivity extends Activity {
 	}
 
 
-	private void saveInFile() {
+	public void saveInFile() {
 		try {
 
 			FileOutputStream fos = openFileOutput(FILENAME,0);
