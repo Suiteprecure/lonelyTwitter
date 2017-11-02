@@ -1,9 +1,8 @@
 package ca.ualberta.cs.lonelytwitter;
 
-import android.app.Activity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +24,6 @@ public class EditTweetActivity extends LonelyTwitterActivity {
         loadFromFile();
 
         Button saveButton = (Button) findViewById(R.id.saveChange);
-        Log.i("---------->", new Integer(tweetList.size()).toString());
         String oldText = tweetList.get(position).getMessage();
 
         bodyText = (EditText) findViewById(R.id.editBody);
